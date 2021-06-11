@@ -15,3 +15,14 @@ pub fn not_found() -> &'static str {
   /hello/<name>/<age>
   "
 }
+
+// #[get("/infinite-hellos")]
+// fn hello() -> TextStream![&'static str] {
+//     TextStream! {
+//         let mut interval = time::interval(Duration::from_secs(1));
+//         loop {
+//             yield "hello";
+//             interval.tick().await;
+//         }
+//     }
+// }

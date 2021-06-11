@@ -11,11 +11,32 @@ extern crate rocket;
 mod api;
 mod hello;
 
-use rocket::{response::content, Request};
+use io::Result;
+use rocket::response::content;
+use rocket::response::stream::ReaderStream;
+use rocket::tokio::net::TcpStream;
+use rocket::tokio::time::sleep;
+use rocket::tokio::time::Duration;
+use rocket::Request;
+use std::io;
+use std::net::SocketAddr;
 
 #[get("/")]
 fn index() -> &'static str {
     "Hello, world!"
+}
+
+#[get("/delay/<seconds>")]
+async fn delay(seconds: u64) -> String {
+    sleep(Duration::from_secs(seconds)).await;
+    format!("Waited for {} seconds", seconds)
+}
+
+#[get("/stream")]
+async fn stream() -> Result<ReaderStream![TcpStream]> {
+    let addr = SocketAddr::from(([127, 0, 0, 1], 9999));
+    let stream = TcpStream::connect(addr).await?;
+    Ok(ReaderStream::one(stream))
 }
 
 #[catch(404)]
@@ -37,7 +58,7 @@ async fn main() {
         .register("/hello", catchers![hello::not_found])
         .mount("/api", routes![api::index, api::sym])
         .register("/api", catchers![api::not_found])
-        .mount("/", routes![index])
+        .mount("/", routes![index, delay, stream])
         .register("/", catchers![not_found])
         .launch()
         .await;

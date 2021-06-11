@@ -1,6 +1,7 @@
 #![warn(clippy::all, clippy::cargo)]
 
-use serde::{Deserialize, Serialize};
+use rocket::serde::{json::Json, Deserialize, Serialize};
+use rocket::{http::Status, response::status};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Symbol {
@@ -9,37 +10,21 @@ pub struct Symbol {
 }
 
 #[get("/")]
-pub fn index() -> &'static str {
-    "api root"
+pub fn index() -> status::Accepted<String> {
+    status::Accepted(Some(String::from("api root")))
 }
 
+// https://github.com/SergioBenitez/Rocket/tree/v0.5-rc/examples/serialization
 #[get("/sym")]
-pub fn sym() -> &'static str {
-    // let json = r#"
-    //     {
-    //       "name": "George!",
-    //       "age": 27,
-    //       "verified": false
-    //     }
-    // "#;
-    // let person: Person = serde_json::from_str(json).unwrap();
-    let json = r#"
-  {
-    "code": "btc",
-    "name": "Bitcoin"
-  }
-"#;
-    let symbol: Symbol = serde_json::from_str(json).unwrap();
+pub fn sym() -> status::Custom<Json<Symbol>> {
+    let symbol: Symbol = Symbol {
+        name: String::from("Bitcoin"),
+        code: String::from("btc"),
+    };
 
     println!("{:?}", symbol);
 
-    let mut a = 5;
-    let b = 0;
-    a += b;
-    println!("{:?}", &a);
-
-    "Hello, world!"
-    // json!(symbol)
+    status::Custom(Status::ImATeapot, Json(symbol))
 }
 
 #[catch(404)]

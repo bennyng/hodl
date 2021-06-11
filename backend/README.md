@@ -22,6 +22,16 @@ rustup component add clippy
 cargo clippy
 ```
 
+```rs
+// have this at top of file
+#![warn(
+    clippy::all,
+    clippy::restriction,
+    clippy::pedantic,
+    clippy::cargo
+  )]
+```
+
 # Build
 
 ```sh
