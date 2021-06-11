@@ -6,6 +6,8 @@ authors = ["B <philoman@gmail.com>"]
 edition = "2018"
 description = "A bunch of helpful lints to avoid common pitfalls in Rust"
 repository = "MIT OR Apache-2.0"
+keywords = ["rocket", "framework", "templates", "templating", "engine"]
+categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

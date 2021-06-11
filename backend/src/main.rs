@@ -3,65 +3,23 @@
     // clippy::restriction,
     // clippy::pedantic,
     clippy::cargo
-)]
-// #![feature(proc_macro_hygiene, decl_macro)]
+  )]
 
 #[macro_use]
 extern crate rocket;
-// #[macro_use]
-// extern crate rocket_contrib;
-
-use std::string;
-
-use rocket::response::content;
-// use rocket_contrib::json::{Json, JsonValue};
-use serde::{Deserialize, Serialize};
 
 mod api;
+mod hello;
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Person {
-    name: String,
-    age: usize,
-    verified: bool,
-}
-
-#[get("/hello/<name>/<age>")]
-fn hello(name: String, age: u8) -> String {
-    format!("Hello, {} year old named {}!", age, name)
-}
+use rocket::{response::content, Request};
 
 #[get("/")]
 fn index() -> &'static str {
-    // let json = r#"
-    //     {
-    //       "name": "George!",
-    //       "age": 27,
-    //       "verified": false
-    //     }
-    // "#;
-    // let person: Person = serde_json::from_str(json).unwrap();
-    let json = r#"
-    {
-      "code": "btc",
-      "name": "Bitcoin"
-    }
-"#;
-    let symbol: api::Symbol = serde_json::from_str(json).unwrap();
-
-    println!("{:?}", symbol);
-
-    let mut a = 5;
-    let b = 0;
-    a += b;
-    println!("{:?}", &a);
-
     "Hello, world!"
-    // json!(symbol)
 }
 
 #[catch(404)]
-fn not_found(req: &rocket::Request) -> content::Html<String> {
+fn not_found(req: &Request) -> content::Html<String> {
     content::Html(format!(
         "<p>Sorry, but '{}' is not a valid path!</p>
             <p>Try visiting /hello/&lt;name&gt;/&lt;age&gt; instead!!</p>",
@@ -69,11 +27,23 @@ fn not_found(req: &rocket::Request) -> content::Html<String> {
     ))
 }
 
-fn main() {
-    let e = rocket::build().mount("/", routes![index]);
-    // .register(catchers![not_found])
-    // .launch();
+// https://rocket.rs/v0.5-rc/guide/overview/#launching
+// #[launch]
+// fn rocket() -> _ {
+#[rocket::main]
+async fn main() {
+    let result = rocket::build()
+        .mount("/hello", routes![hello::index])
+        .register("/hello", catchers![hello::not_found])
+        .mount("/api", routes![api::index, api::sym])
+        .register("/api", catchers![api::not_found])
+        .mount("/", routes![index])
+        .register("/", catchers![not_found])
+        .launch()
+        .await;
 
-    println!("Whoops! Rocket didn't launch!");
-    // println!("This went wrong: {}", e);
+    match result {
+        Ok(_) => println!("Running"),
+        Err(e) => println!("Error starting server: {}", e),
+    };
 }
