@@ -1,0 +1,15 @@
+[package]
+name = "hodl_backend"
+license = "MIT"
+version = "0.1.0"
+authors = ["B <philoman@gmail.com>"]
+edition = "2018"
+description = "A bunch of helpful lints to avoid common pitfalls in Rust"
+repository = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = "0.5.0-rc.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0"
