@@ -1,1 +1,5 @@
 target
+.server_ip
+deploykey
+hodl-backend.tar.gz
+hodl-backend.*
