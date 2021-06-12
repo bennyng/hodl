@@ -1,0 +1,75 @@
+name: backend ci
+
+on:
+  push:
+     branches:
+      - main
+      
+jobs:
+  deploy:
+    name: Deploy new image
+    strategy:
+      matrix:
+        go-version: [1.16.x]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    -
+      name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+
+    -
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    -
+      name: Build image
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: ./backend
+        push: false
+        load: true
+        tags: hodl-backend
+
+    -
+      name: Save image
+      run: |-
+        docker images
+        docker save -o ./hodl-backend.tar.gz hodl-backend
+
+    -
+      name: Upload image
+      uses: appleboy/scp-action@master
+      with:
+        host: api.bible-story.fun-mushroom.com
+        username: deployer
+        key: ${{ secrets.DEPLOY_KEY }}
+        port: 22
+        source: ./hodl-backend.tar.gz
+        target: /home/deployer/
+        
+    -
+      name: Load image & re-run
+      uses: appleboy/ssh-action@master
+      with:
+        host: api.bible-story.fun-mushroom.com
+        username: deployer
+        key: ${{ secrets.DEPLOY_KEY }}
+        port: 22
+        script: |
+          docker load -i /home/deployer/hodl-backend.tar.gz
+          docker stop hodl-backend || true
+          docker rm hodl-backend || true
+          docker run -dit --name hodl-backend -p 8000 --network caddy_default hodl-backend
+
