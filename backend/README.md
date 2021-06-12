@@ -1,7 +1,7 @@
 # This project is created by
 
 ```sh
-cargo new hodl_backend --bin
+cargo new hodl-backend --bin
 ```
 
 # Install rust
@@ -60,3 +60,9 @@ https://www.bybt.com/pro
 https://genekuo.medium.com/creating-a-rest-api-in-rust-with-persistence-rust-rocket-and-diesel-a4117d400104
 
 https://rust-lang.github.io/rustup-components-history/
+
+## Docker
+
+https://kerkour.com/blog/rust-small-docker-image/
+
+https://blog.logrocket.com/packaging-a-rust-web-service-using-docker/

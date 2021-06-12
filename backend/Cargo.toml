@@ -1,5 +1,5 @@
 [package]
-name = "hodl_backend"
+name = "hodl-backend"
 license = "MIT"
 version = "0.1.0"
 authors = ["B <philoman@gmail.com>"]
@@ -10,6 +10,8 @@ keywords = ["rocket", "framework", "templates", "templating", "engine"]
 categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

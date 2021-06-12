@@ -26,12 +26,14 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
+/// https://rocket.rs/v0.5-rc/guide/responses/#async-streams
 #[get("/delay/<seconds>")]
 async fn delay(seconds: u64) -> String {
     sleep(Duration::from_secs(seconds)).await;
     format!("Waited for {} seconds", seconds)
 }
 
+/// https://rocket.rs/v0.5-rc/guide/responses/#async-streams
 #[get("/stream")]
 async fn stream() -> Result<ReaderStream![TcpStream]> {
     let addr = SocketAddr::from(([127, 0, 0, 1], 9999));

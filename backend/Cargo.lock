@@ -370,7 +370,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "hodl_backend"
+name = "hodl-backend"
 version = "0.1.0"
 dependencies = [
  "rocket",
