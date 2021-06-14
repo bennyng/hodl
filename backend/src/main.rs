@@ -58,9 +58,11 @@ async fn main() {
     let result = rocket::build()
         .mount("/hello", routes![hello::index])
         .register("/hello", catchers![hello::not_found])
-        .mount("/api", routes![api::index, api::sym])
+        .mount(
+            "/api",
+            routes![api::index, api::sym, api::heartbeat, api::btc],
+        )
         .register("/api", catchers![api::not_found])
-        .mount("/", routes![index, delay, stream])
         .register("/", catchers![not_found])
         .launch()
         .await;
