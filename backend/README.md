@@ -102,3 +102,46 @@ https://pro.coinmarketcap.com/
 ```sh
 ❯ curl -H "X-CMC_PRO_API_KEY: 791711f6-efb5-461c-87ac-3d8d810f71e0" -H "Accept: application/json" -d "start=1&limit=100&convert=USD" -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
 ```
+
+### FTX
+
+```sh
+wscat --connect "wss://ftx.com/ws/"
+> {"op": "subscribe", "channel": "trades", "market": "BTC-PERP"}
+```
+
+Sample
+
+```json
+{
+  "channel": "trades",
+  "market": "BTC-PERP",
+  "type": "update",
+  "data": [
+    {
+      "id": 1298904051,
+      "price": 39798.0,
+      "size": 0.1028,
+      "side": "sell",
+      "liquidation": false,
+      "time": "2021-06-15T11:54:13.596405+00:00"
+    },
+    {
+      "id": 1298904052,
+      "price": 39798.0,
+      "size": 0.0047,
+      "side": "sell",
+      "liquidation": false,
+      "time": "2021-06-15T11:54:13.596405+00:00"
+    },
+    {
+      "id": 1298904053,
+      "price": 39798.0,
+      "size": 0.19,
+      "side": "sell",
+      "liquidation": false,
+      "time": "2021-06-15T11:54:13.596405+00:00"
+    }
+  ]
+}
+```

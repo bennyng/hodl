@@ -45,14 +45,14 @@ pub fn heartbeat() -> TextStream![&'static str] {
 
 #[get("/btc")]
 pub fn btc() -> EventStream![] {
-    let symbol = Symbol {
+    let _symbol = Symbol {
         name: String::from("Bitcoin"),
         code: String::from("btc"),
     };
 
     EventStream! {
         let (mut socket, response) = connect(
-            Url::parse("wss://stream.cryptowat.ch/connect?apikey=F2INJ703C974UAAG3CNP").unwrap(),
+            Url::parse("wss://ftx.com/ws/").unwrap(),
         )
         .expect("Can't connect");
 
@@ -63,11 +63,14 @@ pub fn btc() -> EventStream![] {
             println!("* {}", header);
         }
 
-        let json = r#"
-        {"subscribe":{"subscriptions":[{"streamSubscription":{"resource":"instruments:9:trades"}}]}}
+        let sub_json = r#"
+        {"op": "subscribe", "channel": "trades", "market": "BTC-PERP"}
         "#;
 
-        socket.write_message(Message::Text(json.into())).unwrap();
+        socket.write_message(Message::Text(sub_json.into())).unwrap();
+
+        // TODO ping
+
         loop {
             let msg = socket.read_message().expect("Error reading message");
             // Received: {"marketUpdate":{"market":{"exchangeId":"25","currencyPairId":"9","marketId":"1258"},"tradesUpdate":{"trades":[{"externalId":"241083690","timestamp":"1623741777","timestampNano":"1623741777000000000","priceStr":"40239.653","amountStr":"0.00177186","amountQuoteStr":"71.29903156458","orderSide":"SELLSIDE"}]}}}

@@ -16,8 +16,8 @@ categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1.0.26", optional = true }
-rocket =  { version = "0.5.0-rc", features = ["json"] }
+rocket = { version = "0.5.0-rc", features = ["json"] }
+rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", branch = "master" }
 tungstenite = "0.13.0"
 url = "2.1.0"
-rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", branch = "master" }
 

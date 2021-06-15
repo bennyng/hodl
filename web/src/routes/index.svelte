@@ -13,7 +13,7 @@
   let data: any;
   let tradeData = [];
   $: if (data) {
-    tradeData = data?.marketUpdate?.tradesUpdate?.trades || [];
+    tradeData = data?.data || [];
   }
 </script>
 
@@ -21,8 +21,8 @@
   <h1>btc trades</h1>
 
   {#if tradeData && tradeData.length > 0}
-    {#each tradeData as trade (trade.externalId)}
-      {trade.amountQuoteStr}@{trade.priceStr}
+    {#each tradeData as trade (trade.id)}
+      {trade.size}@{trade.price}
       <br />
     {/each}
   {:else}
