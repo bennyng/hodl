@@ -7,6 +7,7 @@ mod api;
 mod hello;
 
 use io::Result;
+use rocket::http::Method;
 use rocket::response::content;
 use rocket::response::stream::ReaderStream;
 use rocket::tokio::net::TcpStream;
@@ -15,9 +16,6 @@ use rocket::tokio::time::Duration;
 use rocket::Request;
 use std::io;
 use std::net::SocketAddr;
-use tungstenite::connect;
-use tungstenite::Message;
-use url::Url;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -48,34 +46,38 @@ fn not_found(req: &Request) -> content::Html<String> {
     ))
 }
 
+use rocket_cors::{AllowedHeaders, AllowedOrigins};
+
 // https://rocket.rs/v0.5-rc/guide/overview/#launching
 // #[launch]
 // fn rocket() -> _ {
 #[rocket::main]
-async fn main() {
-    // let (mut socket, response) = connect(
-    //     Url::parse("wss://stream.cryptowat.ch/connect?apikey=F2INJ703C974UAAG3CNP").unwrap(),
-    // )
-    // .expect("Can't connect");
+async fn main() -> Result<()> {
+    let allowed_origins = AllowedOrigins::some(
+        &[
+            "https://hodl.commonlab-van.com",
+            "https://hodl.fun-mushroom.com",
+            "http://0.0.0.0:3000",
+            "http://localhost:3000",
+        ],
+        &[
+            "^https://(.+).hodl.commonlab-van.com$",
+            "^https://(.+).hodl.fun-mushroom.com$",
+        ],
+    );
 
-    // println!("Connected to the server");
-    // println!("Response HTTP code: {}", response.status());
-    // println!("Response contains the following headers:");
-    // for (ref header, _value) in response.headers() {
-    //     println!("* {}", header);
-    // }
+    // You can also deserialize this
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins,
+        allowed_methods: vec![Method::Get].into_iter().map(From::from).collect(),
+        allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()
+    .expect("Error cors");
 
-    // let json = r#"
-    // {"subscribe":{"subscriptions":[{"streamSubscription":{"resource":"instruments:9:trades"}}]}}
-    // "#;
-
-    // socket.write_message(Message::Text(json.into())).unwrap();
-    // loop {
-    //     let msg = socket.read_message().expect("Error reading message");
-    //     println!("Received: {}", msg);
-    // }
-
-    let result = rocket::build()
+    let rocket_result = rocket::build()
         .mount("/hello", routes![hello::index])
         .register("/hello", catchers![hello::not_found])
         .mount(
@@ -85,11 +87,14 @@ async fn main() {
         .register("/api", catchers![api::not_found])
         .mount("/", routes![index, stream, delay])
         .register("/", catchers![not_found])
+        .attach(cors)
         .launch()
         .await;
 
-    match result {
+    match rocket_result {
         Ok(_) => println!("Running"),
         Err(e) => println!("Error starting server: {}", e),
     };
+
+    Ok(())
 }
