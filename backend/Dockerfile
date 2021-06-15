@@ -6,7 +6,7 @@ FROM rust:latest AS builder
 
 RUN update-ca-certificates
 
-ENV USER=myip
+ENV USER=hodl-backend
 ENV UID=10001
 
 RUN adduser \

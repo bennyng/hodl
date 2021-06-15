@@ -1,6 +1,6 @@
 <script lang="ts">
   if (!import.meta.env.SSR) {
-    const sse = new EventSource(`http://0.0.0.0:8000/api/btc`);
+    const sse = new EventSource(`https://api.hodl.commonlab-van.com/api/btc`);
 
     sse.addEventListener("message", (e) => (data = JSON.parse(e.data)));
   }

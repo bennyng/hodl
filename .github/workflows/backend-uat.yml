@@ -15,12 +15,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     -
-      name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go-version }}
-
-    -
       name: Checkout
       uses: actions/checkout@v2
 
