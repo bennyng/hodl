@@ -27,7 +27,7 @@ RUN cargo build --release
 
 
 
-FROM debian:buster-slim
+FROM gcr.io/distroless/cc-debian10
 
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
