@@ -57,12 +57,14 @@ async fn main() -> Result<()> {
         &[
             "https://hodl.commonlab-van.com",
             "https://hodl.fun-mushroom.com",
-            "http://0.0.0.0:3000",
             "http://localhost:3000",
+            "http://127.0.0.1:3000",
         ],
         &[
             "^https://(.+).hodl.commonlab-van.com$",
             "^https://(.+).hodl.fun-mushroom.com$",
+            "http://localhost(.+)",
+            "http://127.0.0.1(.+)",
         ],
     );
 
