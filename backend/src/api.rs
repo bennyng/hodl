@@ -2,9 +2,11 @@
 
 use rocket::response::stream::{Event, EventStream, TextStream};
 use rocket::serde::{json::Json, Deserialize, Serialize};
-use rocket::{http::Status, response::status};
-
 use rocket::tokio::time::{self, Duration};
+use rocket::{http::Status, response::status};
+use tungstenite::connect;
+use tungstenite::Message;
+use url::Url;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Symbol {
@@ -49,12 +51,29 @@ pub fn btc() -> EventStream![] {
     };
 
     EventStream! {
+        let (mut socket, response) = connect(
+            Url::parse("wss://stream.cryptowat.ch/connect?apikey=F2INJ703C974UAAG3CNP").unwrap(),
+        )
+        .expect("Can't connect");
+
+        println!("Connected to the server");
+        println!("Response HTTP code: {}", response.status());
+        println!("Response contains the following headers:");
+        for (ref header, _value) in response.headers() {
+            println!("* {}", header);
+        }
+
+        let json = r#"
+        {"subscribe":{"subscriptions":[{"streamSubscription":{"resource":"instruments:9:trades"}}]}}
+        "#;
+
+        socket.write_message(Message::Text(json.into())).unwrap();
         loop {
-            let mut interval = time::interval(Duration::from_secs(1));
-            loop {
-                yield Event::json(&symbol);
-                interval.tick().await;
-            }
+            let msg = socket.read_message().expect("Error reading message");
+            // Received: {"marketUpdate":{"market":{"exchangeId":"25","currencyPairId":"9","marketId":"1258"},"tradesUpdate":{"trades":[{"externalId":"241083690","timestamp":"1623741777","timestampNano":"1623741777000000000","priceStr":"40239.653","amountStr":"0.00177186","amountQuoteStr":"71.29903156458","orderSide":"SELLSIDE"}]}}}
+            println!("Received: {}", msg);
+
+            yield Event::data(msg.to_string());
         }
     }
 }
