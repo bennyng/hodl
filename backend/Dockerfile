@@ -4,11 +4,9 @@
 
 FROM rust:latest AS builder
 
-RUN rustup target add x86_64-unknown-linux-musl
-RUN apt update && apt install -y musl-tools musl-dev
 RUN update-ca-certificates
 
-ENV USER=hodl-backend
+ENV USER=myip
 ENV UID=10001
 
 RUN adduser \
@@ -24,23 +22,21 @@ WORKDIR /hodl-backend
 
 COPY . .
 
-RUN cargo build --target x86_64-unknown-linux-musl --release
+RUN cargo build --release
 
 
 
 
-FROM scratch
+FROM debian:buster-slim
 
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
 WORKDIR /hodl-backend
 
-COPY --from=builder /hodl-backend/target/x86_64-unknown-linux-musl/release/hodl-backend ./
+COPY --from=builder /hodl-backend/target/release/hodl-backend ./
 COPY --from=builder /hodl-backend/Rocket.toml ./
 
 USER hodl-backend:hodl-backend
-
-EXPOSE 8000
 
 CMD ["/hodl-backend/hodl-backend"]
