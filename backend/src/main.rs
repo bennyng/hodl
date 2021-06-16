@@ -56,13 +56,12 @@ async fn main() -> Result<()> {
     let allowed_origins = AllowedOrigins::some(
         &[
             "https://hodl.commonlab-van.com",
-            "https://hodl.fun-mushroom.com",
+            "https://bennyng.github.io/hodl",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
         ],
         &[
             "^https://(.+).hodl.commonlab-van.com$",
-            "^https://(.+).hodl.fun-mushroom.com$",
             "http://localhost(.+)",
             "http://127.0.0.1(.+)",
         ],

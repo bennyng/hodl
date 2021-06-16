@@ -4,6 +4,7 @@
       import.meta.env.PROD === true
         ? "https://api.hodl.commonlab-van.com/api/btc"
         : "http://0.0.0.0:8000/api/btc";
+
     new EventSource(apiUrl).addEventListener(
       "message",
       (e) => (data = JSON.parse(e.data))
