@@ -4,7 +4,7 @@
 
 [Read more](./backend/README.md)
 
-## Web (Svelete)
+## Web (Svelte)
 
 [Read more](./web/README.md)
 
