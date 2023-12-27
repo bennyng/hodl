@@ -24,4 +24,4 @@ make docker-build
 
 ## Demo
 
-https://hodl.commonlab-van.com/
+https://bennyng.github.io/hodl/
