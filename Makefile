@@ -1,4 +1,4 @@
-docker-build-push: docker-build-web docker-build-backend
+docker-build-push: docker-build-push-web docker-build-push-backend
 
 docker-build-push-web:
 	make -C ./web docker-build && \
