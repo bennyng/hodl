@@ -103,7 +103,7 @@ https://pro.coinmarketcap.com/
 ❯ curl -H "X-CMC_PRO_API_KEY: 791711f6-efb5-461c-87ac-3d8d810f71e0" -H "Accept: application/json" -d "start=1&limit=100&convert=USD" -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
 ```
 
-### FTX
+### FTX (discontinued function)
 
 ```sh
 wscat --connect "wss://ftx.com/ws/"
@@ -144,4 +144,11 @@ Sample
     }
   ]
 }
+```
+
+### Binance API
+
+```sh
+wscat --connect wss://stream.binance.com:9443/ws/BTC/USDT@bookTicker
+> {"method": "SUBSCRIBE","params":["btcusdt@aggTrade","btcusdt@depth"],"id": 1}
 ```

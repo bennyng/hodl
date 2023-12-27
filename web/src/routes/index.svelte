@@ -3,7 +3,7 @@
     const apiUrl =
       import.meta.env.PROD === true
         ? "https://api.hodl.commonlab-van.com/api/btc"
-        : "http://0.0.0.0:8000/api/btc";
+        : "http://0.0.0.0:9000/api/btc";
 
     new EventSource(apiUrl).addEventListener(
       "message",
@@ -12,20 +12,20 @@
   }
 
   let data: any;
-  let tradeData = [];
+  let ready = false;
+  let latestPrice = 0;
   $: if (data) {
-    tradeData = data?.data || [];
+    ready = true;
+    latestPrice =
+      data && data.e === "aggTrade" && data.p ? data.p : latestPrice;
   }
 </script>
 
 <div class="row">
-  <h1>btc trades</h1>
+  <h1>btc price</h1>
 
-  {#if tradeData && tradeData.length > 0}
-    {#each tradeData as trade (trade.id)}
-      {trade.size}@{trade.price}
-      <br />
-    {/each}
+  {#if ready}
+    {latestPrice}
   {:else}
     connecting...
   {/if}

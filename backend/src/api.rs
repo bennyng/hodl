@@ -51,10 +51,17 @@ pub fn btc() -> EventStream![] {
     };
 
     EventStream! {
+        // let (mut socket, response) = connect(
+        //     Url::parse("wss://ftx.com/ws/").unwrap(),
+        // )
+        // .expect("Can't connect");
+
+        // Binance
         let (mut socket, response) = connect(
-            Url::parse("wss://ftx.com/ws/").unwrap(),
+            Url::parse("wss://stream.binance.com:9443/ws/BTC/USDT@bookTicker").unwrap(),
         )
         .expect("Can't connect");
+        
 
         println!("Connected to the server");
         println!("Response HTTP code: {}", response.status());
@@ -63,10 +70,18 @@ pub fn btc() -> EventStream![] {
             println!("* {}", header);
         }
 
-        let sub_json = r#"
-        {"op": "subscribe", "channel": "trades", "market": "BTC-PERP"}
-        "#;
+        // let sub_json = r#"
+        // {"op": "subscribe", "channel": "trades", "market": "BTC-PERP"}
+        // "#;
+        // let sub_json = r#"
+        // {"op": "subscribe", "channel": "ticker", "market": "BTC-PERP"}
+        // "#;        
+        // socket.write_message(Message::Text(sub_json.into())).unwrap();
 
+        // Binance
+        let sub_json = r#"
+        {"method": "SUBSCRIBE","params":["btcusdt@aggTrade","btcusdt@depth"],"id": 1}
+        "#;        
         socket.write_message(Message::Text(sub_json.into())).unwrap();
 
         // TODO ping
@@ -77,6 +92,7 @@ pub fn btc() -> EventStream![] {
             println!("Received: {}", msg);
 
             yield Event::data(msg.to_string());
+            println!("Write done");
         }
     }
 }

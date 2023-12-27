@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hodl-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-issuer-prod"
+    # REF https://github.com/kubernetes/ingress-nginx/issues/549#issuecomment-522954139
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($scheme = https) {
+        more_clear_headers "Strict-Transport-Security";
+      }
+
+spec:
+  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: hodl-web
+      port:
+        number: 80
+  tls:
+    - hosts:
+        - hodl.commonlab-van.com
+        - api.hodl.commonlab-van.com
+      secretName: hodl-tls-certificate
+  rules:
+    - host: hodl.commonlab-van.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hodl-web
+                port:
+                  number: 80
+    - host: api.hodl.commonlab-van.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hodl-backend
+                port:
+                  number: 80

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hodl-backend
+spec:
+  selector:
+    app.kubernetes.io/name: hodl
+    app.kubernetes.io/instance: hodl-backend
+  ports:
+    - name: app
+      protocol: TCP
+      port: 80
+      targetPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hodl-web
+spec:
+  selector:
+    app.kubernetes.io/name: hodl
+    app.kubernetes.io/instance: hodl-web
+  ports:
+    - name: app
+      protocol: TCP
+      port: 80
+      targetPort: 3000

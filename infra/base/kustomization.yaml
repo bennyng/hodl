@@ -1,0 +1,8 @@
+resources:
+  - services.yaml
+  - deployments.yaml
+
+namespace: hodl
+
+commonLabels:
+  app.kubernetes.io/managed-by: kustomize
